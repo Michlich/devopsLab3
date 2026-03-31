@@ -48,29 +48,46 @@ jobs:
           name: deb-package
           path: programm_1,0_all.deb
   deploy:
+    name: Deploy
     runs-on: self-hosted
     needs: package
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-
-
-      - name: Copy Dockerfile to build context
-        run: |
-          cp Dockerfile ./docker-context/
-
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v2
+ 
+      - name: Download .deb artifact
+        uses: actions/download-artifact@v4
         with:
-          context: ./docker-context
-          file: ./docker-context/Dockerfile
-          tags: my-program:latest
-          push: false
-
-      - name: Test Docker container
+          name: reverse-deb
+          path: dist
+ 
+      - name: Build Docker image from .deb
         run: |
-          docker run --rm my-program:latest || {
-            echo "Docker container failed to run successfully";
-            exit 1;
-          }
+          set -euo pipefail
+          ls -la dist
+          docker build -t reverse:ci .
+ 
+      - name: Run container and validate output
+        run: |
+          set -euo pipefail
+          docker run --rm reverse:ci | tee container.out
+          grep -Eq '^Zeros above main diagonal: [0-9]+$' container.out
+          grep -Eq '^Positive below secondary diagonal: [0-9]+$' container.out
+ 
+      - name: Publish image to Docker Hub (tag builds only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          VERSION_TAG: ${{ github.ref_name }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DOCKERHUB_USERNAME}" ] || [ -z "${DOCKERHUB_TOKEN}" ]; then
+            echo "DOCKERHUB_USERNAME/DOCKERHUB_TOKEN are not set. Skipping Docker Hub push."
+            exit 0
+          fi
+          echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+          docker tag reverse:ci "${IMAGE_NAME}:${VERSION_TAG}"
+          docker tag reverse:ci "${IMAGE_NAME}:latest"
+          docker push "${IMAGE_NAME}:${VERSION_TAG}"
+          docker push "${IMAGE_NAME}:latest"
