@@ -57,9 +57,6 @@ jobs:
  
       - name: Download .deb artifact
         uses: actions/download-artifact@v4
-        with:
-          name: reverse-deb
-          path: dist
  
       - name: Build Docker image from .deb
         run: |
