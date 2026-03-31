@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+	configure)
+		cd /home/vboxuser/devopsLab2
+		make || exit 1
+		;;
+	abort-upgrade|abort-remove|abort-deconfigurate)
+		;;
+	*)
+		echo "ERRRR ($1)" >&2
+		exit 1
+		;;
+esac
+exit 0
