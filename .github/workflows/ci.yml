@@ -53,12 +53,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Download .deb package artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: reverse-deb
-          path: dist
-          merge-multiple: false
       - name: Copy Dockerfile to build context
         run: |
           mkdir -p ./docker-context
