@@ -47,29 +47,29 @@ jobs:
         with:
           name: deb-package
           path: programm_1,0_all.deb
-deploy:
-  runs-on: self-hosted
-  needs: package 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    - name: Download .deb package artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: reverse-deb
-        path: dist
-        merge-multiple: false
-    - name: Copy Dockerfile to build context
-      run: |
-        mkdir -p ./docker-context
-        cp Dockerfile ./docker-context/
-        cp dist/programm_1.0_all.deb ./docker-context/
-    - name: Build Docker image
-      run: |
-        docker build -t my-program:latest -f ./docker-context/Dockerfile ./docker-context
-    - name: Test Docker container
-      run: |
-        docker run --rm my-program:latest || {
-          echo "Docker container failed to run successfully";
-          exit 1;
-        }
+  deploy:
+    runs-on: self-hosted
+    needs: package 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Download .deb package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: reverse-deb
+          path: dist
+          merge-multiple: false
+      - name: Copy Dockerfile to build context
+        run: |
+          mkdir -p ./docker-context
+          cp Dockerfile ./docker-context/
+          cp dist/programm_1.0_all.deb ./docker-context/
+      - name: Build Docker image
+        run: |
+          docker build -t my-program:latest -f ./docker-context/Dockerfile ./docker-context
+      - name: Test Docker container
+        run: |
+          docker run --rm my-program:latest || {
+            echo "Docker container failed to run successfully";
+            exit 1;
+          }
