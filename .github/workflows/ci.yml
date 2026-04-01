@@ -49,7 +49,7 @@ jobs:
           path: programm_1,0_all.deb
 deploy:
   runs-on: self-hosted
-  needs: package  # Гарантирует, что package выполнится до deploy
+  needs: package 
   steps:
     - name: Checkout code
       uses: actions/checkout@v4
