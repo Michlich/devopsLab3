@@ -1,16 +1,26 @@
 #!/bin/sh
 set -e
-
 case "$1" in
-	configure)
-		cd /home/vboxuser/devopsLab3
-		make || exit 1
-		;;
-	abort-upgrade|abort-remove|abort-deconfigurate)
-		;;
-	*)
-		echo "ERRRR ($1)" >&2
-		exit 1
-		;;
+    configure)
+        # Сначала проверяем, есть ли Makefile в текущей директории
+        if [ -f "Makefile" ]; then
+            # Если есть — выполняем make в текущей директории
+            make || exit 1
+        else
+            # Если нет — переходим в целевую директорию и выполняем make
+            if [ -d "/home/vboxuser/devopsLab3" ]; then
+                cd "/home/vboxuser/devopsLab3" && make || exit 1
+            else
+                echo "ERROR: Neither Makefile in current directory nor target directory /home/vboxuser/devopsLab3 exists" >&2
+                exit 1
+            fi
+        fi
+        ;;
+    abort-upgrade|abort-remove|abort-deconfigure)
+        ;;
+    *)
+        echo "ERROR: Unknown argument '$1'" >&2
+        exit 1
+        ;;
 esac
 exit 0
