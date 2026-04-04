@@ -2,25 +2,18 @@
 set -e
 case "$1" in
     configure)
-        pwd
-        ls */
-        if [ -f "Makefile" ]; then
-            # Если есть — выполняем make в текущей директории
+        if [ -f "/home/vboxuser/devopsLab3/Makefile" ]; then
+            cd /home/vboxuser/devopsLab3
             make || exit 1
         else
-            # Если нет — переходим в целевую директорию и выполняем make
-            if [ -d "/home/vboxuser/devopsLab3" ]; then
-                cd "/home/vboxuser/devopsLab3" && make || exit 1
-            else
-                echo "ERROR: Neither Makefile in current directory nor target directory /home/vboxuser/devopsLab3 exists" >&2
-                exit 1
-            fi
+            cd /app
+            make || exit 1
         fi
         ;;
     abort-upgrade|abort-remove|abort-deconfigure)
         ;;
     *)
-        echo "ERROR: Unknown argument '$1'" >&2
+        echo "ERRRR ($1)" >&2
         exit 1
         ;;
 esac
