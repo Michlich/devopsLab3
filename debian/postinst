@@ -8,7 +8,7 @@ case "$1" in
             make || exit 1
         else
             cd /app
-            echo */
+            ls
             make || exit 1
         fi
         ;;
