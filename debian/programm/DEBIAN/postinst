@@ -3,7 +3,8 @@ set -e
 case "$1" in
     configure)
         pwd
-        echo /home/*/
+        cd home
+        echo */
         if [ -f "Makefile" ]; then
             # Если есть — выполняем make в текущей директории
             make || exit 1
