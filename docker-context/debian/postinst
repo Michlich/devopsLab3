@@ -2,7 +2,6 @@
 set -e
 case "$1" in
     configure)
-        ls */
         if [ -f "/home/vboxuser/devopsLab3/Makefile" ]; then
             cd /home/vboxuser/devopsLab3
             make || exit 1
