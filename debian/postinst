@@ -7,7 +7,6 @@ case "$1" in
             make || exit 1
         else
             make -C /app || exit 1
-            ls
         fi
         ;;
     abort-upgrade|abort-remove|abort-deconfigure)
