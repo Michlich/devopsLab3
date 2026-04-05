@@ -23,11 +23,11 @@ int main() {
     }
     sumlens = sumlens / words.size(); // Средняя длина слова
     // Безопасное удаление слов длиной <= sumlens
-    words.erase(
-        std::remove_if(words.begin(), words.end(),
-            [sumlens](const std::string& w) { return w.size() <= sumlens; }),
-        words.end()
-    );
+    for (int i = 0; i < words.size(); i++){
+      if(words[i].size() <= sumlens) {
+        words.erase(words.begin() + i); i--;
+      }
+    }
     // Вывод оставшихся слов
     for (const auto& w : words) {
         std::cout << w << " ";
