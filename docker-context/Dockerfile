@@ -13,6 +13,5 @@ RUN dpkg -i /app/programm_1.0_all.deb || \
     (apt-get update && apt-get install -f -y && dpkg -i /app/programm_1.0_all.deb)
 RUN rm /app/programm_1.0_all.deb
 WORKDIR /app
-CMD ["sh", "-c", "ls -la /app && /app/programm --success-exit"]
 
 
